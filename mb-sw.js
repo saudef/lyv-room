@@ -34,7 +34,7 @@ self.addEventListener("fetch", (e) => {
     if (!aes) return new Response("Open the mood board from the LYV room.", { status: 403, headers: { "content-type": "text/plain; charset=utf-8" } });
     const rel = decodeURIComponent(url.slice(scope.length)) || "index.html";
     const name = hex(await crypto.subtle.sign("HMAC", mac, new TextEncoder().encode("lyv-mb:" + rel))).slice(0, 32);
-    const r = await fetch(new URL("../mb-data/" + name + ".bin", scope));
+    const r = await fetch(new URL("../mb-data/" + name + ".bin", scope), { cache: "no-cache" }); // revalidate: a republished file keeps its name
     if (!r.ok) return new Response("Not found", { status: 404 });
     const u = new Uint8Array(await r.arrayBuffer());
     try {
